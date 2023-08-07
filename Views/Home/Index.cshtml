@@ -26,9 +26,9 @@
                 <td>@todo.Description</td>
                 <td>@(todo.IsDone ? "Yes" : "No")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@todo.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@todo.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@todo.Id">Delete</a>
+                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@todo.Id">Details</a> 
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@todo.Id">Edit</a> 
+                    <a class="btn btn-primary" asp-action="Delete" asp-route-id="@todo.Id">Delete</a>
                 </td>
             </tr>
         }
