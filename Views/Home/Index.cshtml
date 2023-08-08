@@ -1,9 +1,10 @@
 ﻿<!-- Index.cshtml -->
 @model List<Web_1001_ToDoApp.Models.Todo>
-
+<!-- This is the main page to add a todo -->
 <h1>Todo List</h1>
-
+ <link rel="stylesheet" href="~/Web_1001_ToDoApp.styles.css" asp-append-version="true" />
 <table class="table">
+
     <thead>
         <tr>
             <th>ID</th>
@@ -29,7 +30,10 @@
                     <span class="editable-field" data-property="Due" data-id="@todo.Id">@todo.Due</span>
                 </td>
                 <td>
-                    <span class="editable-field" data-property="IsDone" data-id="@todo.Id">@todo.IsDone</span>
+                    <label class="editable-checkbox" data-id="@todo.Id">
+                        <input type="checkbox" class="disabled-checkbox" @(todo.IsDone ? "checked" : "") />
+                        <span class="checkbox-icon"></span>
+                    </label>
                 </td>
                 <td>
                     <button class="btn edit-button btn-primary" data-id="@todo.Id">Edit</button>
@@ -40,16 +44,11 @@
         }
 
         <!-- Form for creating a new Todo item -->
-        <tr>
-            <td></td>
-            <td><input id="newTitle"  class="form-control" placeholder="Title"/></td>
-            <td><input id="newDescription" class="form-control"placeholder="Description" /></td>
-            <td><input id="newDate" class="form-control" placeholder="yyyy/mm/dd"/></td>
-            <td><input id="newIsDone" type="checkbox" class="form-check-input" /></td>
-            <td>
-                <button class="btn btn-link" id="addButton">Add</button>
-            </td>
-        </tr>
+        
+            
+        <p><a asp-action="Create">Create New Todo</a></p>
+            
+        
     </tbody>
 </table>
 
@@ -89,6 +88,7 @@
                     }
                 });
             });
+            
 
             // Function to handle Todo deletion
             $('.delete-button').on('click', function () {
@@ -109,27 +109,7 @@
             });
 
             // Function to handle adding new Todo items
-            $('#addButton').on('click', function () {
-                var newTodo = {
-                    Title: $('#newTitle').val(),
-                    Description: $('#newDescription').val(),
-                    IsDone: $('#newIsDone').is(':checked')
-                };
-
-                // Perform AJAX request to create the new Todo item
-                $.ajax({
-                    type: 'POST',
-                    url: '/Home/Add', // Replace with your actual create action URL
-                    data: newTodo,
-                    success: function () {
-                        // Refresh the Todo list after successful creation
-                        window.location.reload();
-                    },
-                    error: function () {
-                        alert('Error creating the Todo item. Please try again.');
-                    }
-                });
-            });
+            
         });
     </script>
 }

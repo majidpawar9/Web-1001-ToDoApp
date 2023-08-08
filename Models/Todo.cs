@@ -1,4 +1,4 @@
-
+// Todo class and its properties
 namespace Web_1001_ToDoApp.Models{
 public class Todo
 {

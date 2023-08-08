@@ -6,6 +6,7 @@ namespace Web_1001_ToDoApp.Controllers;
 
 public class HomeController : Controller
 {
+    // Hardcoded list
     private static List<Todo> todos = new List<Todo>
     {
         new Todo { Id = 1, Title = "Buy groceries", Description = "Milk, Eggs, Bread",Due = "2023/12/01", IsDone = false },
@@ -16,34 +17,26 @@ public class HomeController : Controller
     {
         return View(todos);
     }
-
-    
+    // this function is for creating a new todo
     public IActionResult Create()
     {
         return View();
     }
+// this function is post the newly created todo
     [HttpPost]
     public IActionResult Create(Todo todo)
     {
         if (ModelState.IsValid)
         {
-            // Assign a new ID (for simplicity, you may need a more robust method in a real application)
-            int newId = todos.Count + 1;
-            todo.Id = newId;
-
-            // Add the new Todo item to the list
+            todo.Id = todos.Max(t => t.Id) + 1;
             todos.Add(todo);
+            return RedirectToAction("Index");
+        }
 
-            return Ok();
-        }
-        else
-        {
-            return BadRequest();
-        }
+        return View(todo);
     }
-
     
-
+// this function will edit a todo
     public IActionResult Edit(int? id)
     {
         if (id == null)
@@ -56,7 +49,7 @@ public class HomeController : Controller
 
         return View(todo);
     }
-
+// this function save the edited todo
     [HttpPost]
     public IActionResult Edit(Todo todo)
     {
@@ -70,13 +63,13 @@ public class HomeController : Controller
             existingTodo.Title = todo.Title;
             existingTodo.Description = todo.Description;
             existingTodo.IsDone = todo.IsDone;
-
             return RedirectToAction("Index");
         }
 
         return View(todo);
     }
 
+// this function will delete a todo
     public IActionResult Delete(int? id)
     {
         if (id == null)
@@ -90,6 +83,7 @@ public class HomeController : Controller
         return View(todo);
     }
 
+// this function will delete a todo and update
     [HttpPost]
     public IActionResult Delete(int id)
     {
