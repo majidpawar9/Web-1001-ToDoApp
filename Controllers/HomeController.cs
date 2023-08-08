@@ -8,8 +8,8 @@ public class HomeController : Controller
 {
     private static List<Todo> todos = new List<Todo>
     {
-        new Todo { Id = 1, Title = "Buy groceries", Description = "Milk, Eggs, Bread", IsDone = false },
-        new Todo { Id = 2, Title = "Go for a run", Description = "Morning exercise", IsDone = true },
+        new Todo { Id = 1, Title = "Buy groceries", Description = "Milk, Eggs, Bread",Due = "2023/12/01", IsDone = false },
+        new Todo { Id = 2, Title = "Go for a run", Description = "Morning exercise",Due = "2023/01/17", IsDone = true },
     };
 
     public IActionResult Index()
@@ -17,19 +17,11 @@ public class HomeController : Controller
         return View(todos);
     }
 
-    public IActionResult Details(int? id)
+    
+    public IActionResult Create()
     {
-        if (id == null)
-            return NotFound();
-
-        var todo = todos.FirstOrDefault(t => t.Id == id);
-
-        if (todo == null)
-            return NotFound();
-
-        return View(todo);
+        return View();
     }
-
     [HttpPost]
     public IActionResult Create(Todo todo)
     {
@@ -49,6 +41,8 @@ public class HomeController : Controller
             return BadRequest();
         }
     }
+
+    
 
     public IActionResult Edit(int? id)
     {
@@ -106,27 +100,5 @@ public class HomeController : Controller
 
         return RedirectToAction("Index");
     }
-    [HttpPost]
-    public IActionResult Update(Todo todo)
-    {
-        if (ModelState.IsValid)
-        {
-            var existingTodo = todos.Find(t => t.Id == todo.Id);
-            if (existingTodo != null)
-            {
-                existingTodo.Title = todo.Title;
-                existingTodo.Description = todo.Description;
-                existingTodo.IsDone = todo.IsDone;
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-        else
-        {
-            return BadRequest();
-        }
-    }
+    
 }

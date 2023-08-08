@@ -9,12 +9,9 @@
             <th>ID</th>
             <th>Title</th>
             <th>Description</th>
+            <th>Due</th>
             <th>Is Done</th>
-            <th></th>
             <th>Actions</th>
-        </tr>
-        <tr>
-            <button class="btn btn-link" >Create</button>
         </tr>
     </thead>
     <tbody>
@@ -29,22 +26,34 @@
                     <span class="editable-field" data-property="Description" data-id="@todo.Id">@todo.Description</span>
                 </td>
                 <td>
+                    <span class="editable-field" data-property="Due" data-id="@todo.Id">@todo.Due</span>
+                </td>
+                <td>
                     <span class="editable-field" data-property="IsDone" data-id="@todo.Id">@todo.IsDone</span>
                 </td>
                 <td>
-                    <button class="btn btn-primary" data-id="@todo.Id">Details</button>
-                </td>
-                <td>
-                    <button class="btn btn-success edit-button" data-id="@todo.Id">Edit</button>
-                    <button class="btn btn-warning save-button" data-id="@todo.Id" style="display: none">Save</button>
-                </td>
-                <td>
-                    <button class="btn btn-danger" data-id="@todo.Id">Delete</button>
+                    <button class="btn edit-button btn-primary" data-id="@todo.Id">Edit</button>
+                    <button class="btn save-button btn-warning" data-id="@todo.Id" style="display: none">Save</button>
+                    <button class="btn delete-button btn-danger" data-id="@todo.Id">Delete</button>
                 </td>
             </tr>
         }
+
+        <!-- Form for creating a new Todo item -->
+        <tr>
+            <td></td>
+            <td><input id="newTitle"  class="form-control" placeholder="Title"/></td>
+            <td><input id="newDescription" class="form-control"placeholder="Description" /></td>
+            <td><input id="newDate" class="form-control" placeholder="yyyy/mm/dd"/></td>
+            <td><input id="newIsDone" type="checkbox" class="form-check-input" /></td>
+            <td>
+                <button class="btn btn-link" id="addButton">Add</button>
+            </td>
+        </tr>
     </tbody>
 </table>
+
+
 @section Scripts {
     <script>
         // Function to handle inline editing and creating new Todo items
@@ -77,6 +86,47 @@
                     },
                     error: function () {
                         alert('Error updating the Todo item. Please try again.');
+                    }
+                });
+            });
+
+            // Function to handle Todo deletion
+            $('.delete-button').on('click', function () {
+                var id = $(this).data('id');
+
+                // Perform AJAX request to delete the Todo item
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/Home/Delete/' + id, // Replace with your actual delete action URL
+                    success: function () {
+                        // Remove the Todo item row from the table after successful deletion
+                        $(`.editable-field[data-id="${id}"]`).closest('tr').remove();
+                    },
+                    error: function () {
+                        alert('Error deleting the Todo item. Please try again.');
+                    }
+                });
+            });
+
+            // Function to handle adding new Todo items
+            $('#addButton').on('click', function () {
+                var newTodo = {
+                    Title: $('#newTitle').val(),
+                    Description: $('#newDescription').val(),
+                    IsDone: $('#newIsDone').is(':checked')
+                };
+
+                // Perform AJAX request to create the new Todo item
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/Add', // Replace with your actual create action URL
+                    data: newTodo,
+                    success: function () {
+                        // Refresh the Todo list after successful creation
+                        window.location.reload();
+                    },
+                    error: function () {
+                        alert('Error creating the Todo item. Please try again.');
                     }
                 });
             });
