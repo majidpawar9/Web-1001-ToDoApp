@@ -47,3 +47,12 @@ button.accept-policy[b-e1oxn2teym] {
   white-space: nowrap;
   line-height: 60px;
 }
+
+
+/* Style for editable fields */
+.editable[b-e1oxn2teym] {
+  border: 1px solid black;
+  padding: 2px;
+  background-color: #FFF6E0;
+}
+

@@ -1,11 +1,7 @@
-﻿
-
-<!-- Index.cshtml -->
+﻿<!-- Index.cshtml -->
 @model List<Web_1001_ToDoApp.Models.Todo>
 
 <h1>Todo List</h1>
-
-<p><a class="btn btn-success" asp-action="Create">Create New Todo</a></p>
 
 <table class="table">
     <thead>
@@ -13,9 +9,12 @@
             <th>ID</th>
             <th>Title</th>
             <th>Description</th>
-            <th>Due</th>
             <th>Is Done</th>
+            <th></th>
             <th>Actions</th>
+        </tr>
+        <tr>
+            <button class="btn btn-link" >Create</button>
         </tr>
     </thead>
     <tbody>
@@ -23,16 +22,64 @@
         {
             <tr>
                 <td>@todo.Id</td>
-                <td>@todo.Title</td>
-                <td>@todo.Description</td>
-                <td>@todo.Due</td>
-                <td>@(todo.IsDone ? "Yes" : "No")</td>
                 <td>
-                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@todo.Id">Details</a> 
-                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@todo.Id">Edit</a> 
-                    <a class="btn btn-primary" asp-action="Delete" asp-route-id="@todo.Id">Delete</a>
+                    <span class="editable-field" data-property="Title" data-id="@todo.Id">@todo.Title</span>
+                </td>
+                <td>
+                    <span class="editable-field" data-property="Description" data-id="@todo.Id">@todo.Description</span>
+                </td>
+                <td>
+                    <span class="editable-field" data-property="IsDone" data-id="@todo.Id">@todo.IsDone</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-id="@todo.Id">Details</button>
+                </td>
+                <td>
+                    <button class="btn btn-success edit-button" data-id="@todo.Id">Edit</button>
+                    <button class="btn btn-warning save-button" data-id="@todo.Id" style="display: none">Save</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" data-id="@todo.Id">Delete</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@section Scripts {
+    <script>
+        // Function to handle inline editing and creating new Todo items
+        $(document).ready(function () {
+            $('.edit-button').on('click', function () {
+                var id = $(this).data('id');
+                $(`.editable-field[data-id="${id}"]`).addClass('editable').attr('contenteditable', true).focus();
+                $(this).hide();
+                $(`.save-button[data-id="${id}"]`).show();
+            });
+
+            $('.save-button').on('click', function () {
+                var id = $(this).data('id');
+                var data = {
+                    Id: id,
+                    Title: $(`.editable-field[data-property="Title"][data-id="${id}"]`).text(),
+                    Description: $(`.editable-field[data-property="Description"][data-id="${id}"]`).text(),
+                    IsDone: $(`.editable-field[data-property="IsDone"][data-id="${id}"]`).text()
+                };
+
+                // Perform AJAX request to update the Todo item
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/Edit', // Replace with your actual update action URL
+                    data: data,
+                    success: function () {
+                        $(`.editable-field[data-id="${id}"]`).removeClass('editable').attr('contenteditable', false);
+                        $(`.edit-button[data-id="${id}"]`).show();
+                        $(`.save-button[data-id="${id}"]`).hide();
+                    },
+                    error: function () {
+                        alert('Error updating the Todo item. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+}

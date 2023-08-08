@@ -10,7 +10,6 @@ public class HomeController : Controller
     {
         new Todo { Id = 1, Title = "Buy groceries", Description = "Milk, Eggs, Bread", IsDone = false },
         new Todo { Id = 2, Title = "Go for a run", Description = "Morning exercise", IsDone = true },
-        // Add more Todo items as needed
     };
 
     public IActionResult Index()
@@ -31,22 +30,24 @@ public class HomeController : Controller
         return View(todo);
     }
 
-    public IActionResult Create()
-    {
-        return View();
-    }
-
     [HttpPost]
     public IActionResult Create(Todo todo)
     {
         if (ModelState.IsValid)
         {
-            todo.Id = todos.Max(t => t.Id) + 1;
-            todos.Add(todo);
-            return RedirectToAction("Index");
-        }
+            // Assign a new ID (for simplicity, you may need a more robust method in a real application)
+            int newId = todos.Count + 1;
+            todo.Id = newId;
 
-        return View(todo);
+            // Add the new Todo item to the list
+            todos.Add(todo);
+
+            return Ok();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 
     public IActionResult Edit(int? id)
@@ -104,5 +105,28 @@ public class HomeController : Controller
             todos.Remove(todo);
 
         return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public IActionResult Update(Todo todo)
+    {
+        if (ModelState.IsValid)
+        {
+            var existingTodo = todos.Find(t => t.Id == todo.Id);
+            if (existingTodo != null)
+            {
+                existingTodo.Title = todo.Title;
+                existingTodo.Description = todo.Description;
+                existingTodo.IsDone = todo.IsDone;
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 }

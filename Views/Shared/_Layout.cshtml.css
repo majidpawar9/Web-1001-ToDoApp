@@ -46,3 +46,12 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+
+/* Style for editable fields */
+.editable {
+  border: 1px solid black;
+  padding: 2px;
+  background-color: #FFF6E0;
+}
+
