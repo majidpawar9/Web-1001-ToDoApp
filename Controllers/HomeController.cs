@@ -6,6 +6,7 @@ namespace Web_1001_ToDoApp.Controllers;
 
 public class HomeController : Controller
 {
+    
     // Hardcoded list
     private static List<Todo> todos = new List<Todo>
     {
@@ -26,15 +27,19 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Create(Todo todo)
     {
-        if (ModelState.IsValid)
-        {
-            todo.Id = todos.Max(t => t.Id) + 1;
-            todos.Add(todo);
+            int newId = todos.Count > 0 ? todos.Max(t => t.Id) + 1 : 1;
+            Todo newTodo = new Todo
+            {
+                Id = newId,
+                Title = todo.Title,
+                Description = todo.Description,
+                Due = todo.Due,
+                IsDone = todo.IsDone
+            };
+            todos.Add(newTodo);
             return RedirectToAction("Index");
-        }
-
-        return View(todo);
     }
+
     
 // this function will edit a todo
     public IActionResult Edit(int? id)
@@ -43,9 +48,12 @@ public class HomeController : Controller
             return NotFound();
 
         var todo = todos.FirstOrDefault(t => t.Id == id);
-
+        todo.Title = todo.Title;
+        todo.Description = todo.Description;
+        todo.IsDone = todo.IsDone;
         if (todo == null)
             return NotFound();
+        
 
         return View(todo);
     }
@@ -55,14 +63,17 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            var existingTodo = todos.FirstOrDefault(t => t.Id == todo.Id);
-
-            if (existingTodo == null)
+            
+            todo = todos.FirstOrDefault(t => t.Id == todo.Id);
+            todo.Title = todo.Title;
+            todo.Description = todo.Description;
+            todo.IsDone = todo.IsDone;
+            todo.Due = todo.Due;
+            todos.Add(todo);
+            if (todo == null)
                 return NotFound();
-
-            existingTodo.Title = todo.Title;
-            existingTodo.Description = todo.Description;
-            existingTodo.IsDone = todo.IsDone;
+            
+            
             return RedirectToAction("Index");
         }
 
@@ -76,7 +87,7 @@ public class HomeController : Controller
             return NotFound();
 
         var todo = todos.FirstOrDefault(t => t.Id == id);
-
+        todos.Remove(todo);
         if (todo == null)
             return NotFound();
 
